@@ -124,6 +124,51 @@ The application includes built-in health checks:
 - Container health monitoring
 - API endpoint health status
 
+## CI/CD Pipeline
+
+The application includes automated CI/CD pipeline using GitHub Actions for seamless deployment:
+
+### Pipeline Features
+- **Automated Build**: Triggers on push to `main` branch and manual workflow dispatch
+- **Multi-Platform Support**: Builds for both `linux/amd64` and `linux/arm64` architectures
+- **Docker Hub Integration**: Automatically pushes images to Docker Hub registry
+- **Production Ready**: Uses multi-stage Docker build for optimized images
+
+### Setup CI/CD
+
+1. **Configure Docker Hub Secrets**
+   ```bash
+   # Add these secrets to your GitHub repository:
+   # Settings > Secrets and variables > Actions
+   DOCKER_USERNAME: your-dockerhub-username
+   DOCKER_PASSWORD: your-dockerhub-password
+   ```
+
+2. **Pipeline Triggers**
+   - Automatic: Push to `main` branch
+   - Manual: Workflow dispatch from GitHub Actions tab
+
+3. **Deployment**
+   ```bash
+   # Pull the latest image from Docker Hub
+   docker pull dhiraj918106/simple-etl-app:latest
+   
+   # Run with environment variables
+   docker run -d \
+     -p 8000:8000 \
+     -e POSTGRES_DB=etl_db \
+     -e POSTGRES_USER=etl_user \
+     -e POSTGRES_PASSWORD=your_password \
+     -e DATABASE_URL=your_database_url \
+     dhiraj918106/simple-etl-app:latest
+   ```
+
+### Pipeline Workflow
+1. **Code Push** → GitHub detects changes
+2. **Build Stage** → Multi-stage Docker build process
+3. **Push Stage** → Image pushed to Docker Hub with `latest` tag
+4. **Deploy** → Pull and run the updated image in your environment
+
 ## Production Considerations
 
 - Change default passwords in `.env`
@@ -131,3 +176,7 @@ The application includes built-in health checks:
 - Configure proper backup strategies for PostgreSQL
 - Monitor container resource usage
 - Implement logging and monitoring solutions
+- Use container orchestration (Kubernetes) for scaling
+- Set up proper secrets management for production credentials
+- Configure load balancers for high availability
+- Implement backup and disaster recovery procedures
